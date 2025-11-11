@@ -16,6 +16,7 @@
       :nama="mhs.nama"
       :nim="mhs.nim"
       :prodi="mhs.prodi"
+      @gantiNama="namaBaru"
     />
   </div>
 
@@ -37,6 +38,18 @@ const mahasiswa = ref([
   { nama: 'Syawal', nim: '2404040', prodi: 'Teknologi Informasi' },
   { nama: 'Danar', nim: '2404004', prodi: 'Teknologi Informasi' },
 ])
+
+// TERIMA EMIT DARI CHILD COMPONENT
+const namaBaru = (data) => {
+  const nimDariChild = data[0]
+  const namaDariChild = data[1]
+
+  const mahasiswaYgMauDiUpdate = mahasiswa.value.findIndex((el) => el.nim === nimDariChild)
+
+  if (mahasiswaYgMauDiUpdate !== -1) {
+    mahasiswa.value[mahasiswaYgMauDiUpdate].nama = namaDariChild
+  }
+}
 
 function increment() {
   jumlahMahasiswa.value++
@@ -91,6 +104,7 @@ function tambahMahasiswa() {
   max-width: 200px;
   background-color: brown;
 }
+
 .submit-button:hover {
   box-shadow: 2px 2px 15px black;
   transition: all 0.5s ease-in-out;

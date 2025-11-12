@@ -44,8 +44,10 @@ const namaBaru = (data) => {
   const nimDariChild = data[0]
   const namaDariChild = data[1]
 
+  // MENDAPATKAN INDEX DARI ARRAY BERDASARKAN NIM
   const mahasiswaYgMauDiUpdate = mahasiswa.value.findIndex((el) => el.nim === nimDariChild)
 
+  // GANTI DATA DI ARRAY BERDASARKAN INDEX
   if (mahasiswaYgMauDiUpdate !== -1) {
     mahasiswa.value[mahasiswaYgMauDiUpdate].nama = namaDariChild
   }

@@ -1,7 +1,17 @@
 <template>
+  <!-- STYLE PAKAI CLASS BINDING (:class) KARENA BUTUH PENGKONDISIAN TIDAK LEBIH DARI KONDISI (TRUE/FALSE) -->
+  <!-- STYLE PAKAI PROPS KARENA BUTUH PENGKONDISI LEBIH DARI DUA KONDISI (CUSTOM) -->
+  <AlertBox :class="{ active: isActive }" :bgColor="bgColorAlert">
+    {{ message }}
+  </AlertBox>
+  <!-- ASSET HANDLING -->
+  <img :src="blob" alt="blob" width="200" />
+  <img src="/src/assets/blob.svg" alt="blob 2" width="200" />
+
   <h1>{{ title }}</h1>
   <p>Jumlah Mahasiswa : {{ mahasiswa.length }}</p>
 
+  <!-- FORM COMPONENT -->
   <div class="form-container">
     <input v-model="nama" type="text" class="form-input" placeholder="Nama" />
     <input v-model="nim" type="text" class="form-input" placeholder="NIM" />
@@ -9,6 +19,10 @@
     <button @click="tambahMahasiswa" class="submit-button">Tambah</button>
   </div>
 
+  <!-- SEARCHBOX COMPONENT-->
+  <SearchBox @search="handleSearch" />
+
+  <!-- CARD MAHASISWA COMPONENT -->
   <div v-if="mahasiswa.length > 0" class="card-container">
     <CardMahasiswa
       v-for="(mhs, index) in mahasiswa"
@@ -26,6 +40,10 @@
 <script setup>
 import { ref } from 'vue'
 import CardMahasiswa from './components/CardMahasiswa.vue'
+import SearchBox from './components/SearchBox.vue'
+import AlertBox from './components/AlertBox.vue'
+import blob from './assets/blob.svg'
+import { useMahasiswaStore } from './stores/Mahasiswa'
 
 const title = ref('Daftar Mahasiswa')
 const jumlahMahasiswa = ref(0)
@@ -33,11 +51,14 @@ const jumlahMahasiswa = ref(0)
 const nama = ref('')
 const nim = ref('')
 const prodi = ref('')
+const useMahasiswas = useMahasiswaStore()
 
-const mahasiswa = ref([
-  { nama: 'Syawal', nim: '2404040', prodi: 'Teknologi Informasi' },
-  { nama: 'Danar', nim: '2404004', prodi: 'Teknologi Informasi' },
-])
+const mahasiswa = ref(useMahasiswas.mahasiswa)
+
+// MANIPULASI ALERT BOX
+const isActive = ref(false)
+const bgColorAlert = ref('')
+const message = ref('')
 
 // TERIMA EMIT DARI CHILD COMPONENT
 const namaBaru = (data) => {
@@ -59,11 +80,40 @@ function increment() {
 
 function tambahMahasiswa() {
   if (nama.value !== '' && nim.value !== '' && prodi.value !== '') {
+    const jmlMHSSebelum = mahasiswa.value.length
+    // ASUMSI CONSUME API POST
     mahasiswa.value.push({ nama: nama.value, nim: nim.value, prodi: prodi.value })
+    const jmlMHSSetelah = mahasiswa.value.length
     nama.value = ''
     nim.value = ''
     prodi.value = ''
+
+    // KALAU ARRAY MAHASISWA TIDAK BERTAMBAH
+    if (jmlMHSSetelah == jmlMHSSebelum) {
+      isActive.value = true
+      bgColorAlert.value = 'merah'
+      message.value = 'data gagal ditambahkan'
+    } else {
+      // KALAU ARRAY MAHASISWA BERTAMBAH
+      isActive.value = true
+      bgColorAlert.value = 'hijau'
+      message.value = 'data berhasil ditambahkan'
+    }
+
+    setTimeout(() => {
+      isActive.value = false
+    }, 3000)
   }
+}
+
+function handleSearch(data) {
+  const mahasiswaSearched = mahasiswa.value.filter((mhs) => {
+    const mhsNama = mhs.nama.toLowerCase()
+    const search = data.toLowerCase()
+    return mhsNama.includes(search)
+  })
+
+  mahasiswa.value = mahasiswaSearched
 }
 </script>
 

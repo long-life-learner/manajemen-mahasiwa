@@ -4,15 +4,18 @@
       <h5>{{ post.title }}</h5>
       <p>{{ post.body }}</p>
       <p>Ditulis Oleh : {{ post.userId }}</p>
+      <button @click="useKeranjang.tambah(post)">Masukkan Keranjang</button>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useKeranjangStore } from '@/stores/Keranjang'
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
 
 const posts = ref([])
+const useKeranjang = useKeranjangStore()
 
 onMounted(async () => {
   const postsData = await axios.get('https://jsonplaceholder.typicode.com/posts')

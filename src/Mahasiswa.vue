@@ -5,6 +5,8 @@
     {{ message }}
   </AlertBox>
   <!-- ASSET HANDLING -->
+
+  <p>User : {{ user != '' ? user : 'Silakan Login' }}</p>
   <img :src="blob" alt="blob" width="200" />
   <img src="/src/assets/blob.svg" alt="blob 2" width="200" />
 
@@ -44,6 +46,7 @@ import SearchBox from './components/SearchBox.vue'
 import AlertBox from './components/AlertBox.vue'
 import blob from './assets/blob.svg'
 import { useMahasiswaStore } from './stores/Mahasiswa'
+import { useUserStore } from './stores/User'
 
 const title = ref('Daftar Mahasiswa')
 const jumlahMahasiswa = ref(0)
@@ -51,9 +54,12 @@ const jumlahMahasiswa = ref(0)
 const nama = ref('')
 const nim = ref('')
 const prodi = ref('')
+
 const useMahasiswas = useMahasiswaStore()
+const useUser = useUserStore()
 
 const mahasiswa = ref(useMahasiswas.mahasiswa)
+const user = ref(useUser.nama)
 
 // MANIPULASI ALERT BOX
 const isActive = ref(false)
